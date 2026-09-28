@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ca">
 <head>
 <meta charset="utf-8">
@@ -25,7 +25,7 @@ main{max-width:640px;margin:0 auto;padding:20px 16px 80px}
 header{display:flex;align-items:center;gap:12px;margin:8px 0 20px}
 header .logo{width:44px;height:44px;border-radius:12px;background:var(--acc);display:grid;place-items:center;font-size:24px;flex:none}
 h1{font-size:22px;line-height:1.15;margin:0;letter-spacing:-.01em}
-header p{margin:2px 0 0;color:var(--mut);font-size:14px}
+header p{margin:,px 0 0;color:var(--mut);font-size:14px}
 section{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 14px}
 h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:0 0 12px;display:flex;gap:8px;align-items:center}
 h2 .n{background:var(--ink);color:var(--card);width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px}
@@ -211,7 +211,7 @@ document.querySelectorAll('[data-custom]').forEach((inp) => inp.addEventListener
 let CLUBS = [];
 const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-async function loadClubs() {
+arync function loadClubs() {
   try {
     const r = await fetch(API + '/clubs');
     CLUBS = await r.json();
@@ -237,21 +237,22 @@ $('#clubs').addEventListener('click', async (e) => {
   $('#teams').innerHTML = '<div class="msg">Carregant equips…</div>';
   try {
     const r = await fetch(`${API}/club/${clubId}`);
-    const { teams, pending } = await r.json();
-    if (pending) {
-      $('#teams').innerHTML = '<div class="msg">Estem carregant els equips d\'aquest club per primer cop. Torna-ho a provar en un parell de minuts.</div>';
-      return;
-    }
-    if (!teams || !teams.length) throw new Error();
-    const byCat = {};
-    teams.forEach((t) => (byCat[t.category] ||= []).push(t));
-    $('#teams').innerHTML = Object.entries(byCat).map(([cat, ts]) =>
-      `<div class="cat">${esc(cat)}</div>` + ts.map((t) => {
-        const on = state.teams.some((x) => x.id === t.id);
-        return `<label class="team"><input type="checkbox" data-team='${esc(JSON.stringify({ clubId, id: t.id, name: t.name, category: t.category }))}' ${on ? 'checked' : ''}><span>${esc(t.name)}</span></label>`;
-      }).join('')).join('');
+    const { teams } = await r.json();
+    if (!teams || !teams.length) throw new Error('no-teams');
+    renderTeams(clubId, teams);
   } catch { $('#teams').innerHTML = '<div class="msg err">No s\'han pogut carregar els equips d\'aquest club.</div>'; }
 });
+
+function renderTeams(clubId, teams) {
+  if (!teams || !teams.length) { $('#teams').innerHTML = '<div class="msg">Aquest club no té equips registrats.</div>'; return; }
+  const byCat = {};
+  teams.forEach((t) => (byCat[t.category] ||= []).push(t));
+  $('#teams').innerHTML = Object.entries(byCat).map(([cat, ts]) =>
+    `<div class="cat">${esc(cat)}</div>` + ts.map((t) => {
+      const on = state.teams.some((x) => x.id === t.id);
+      return `<label class="team"><input type="checkbox" data-team='${esc(JSON.stringify({ clubId, id: t.id, name: t.name, category: t.category }))}' ${on ? 'checked' : ''}><span>${esc(t.name)}</span></label>`;
+    }).join('')).join('');
+}
 $('#teams').addEventListener('change', (e) => {
   const cb = e.target.closest('[data-team]');
   if (!cb) return;
@@ -304,8 +305,8 @@ function renderLinks() {
   } else {
     main.href = $('#bGoogle').href; main.target = '_blank';
     $('#mainNote').textContent = DEVICE === 'android'
-      ? 'S\'obrirà Google Calendar: prem «Afegir». Si al mòbil no et deixa, fes-ho un cop des de l\'ordinador i apareixerà al mòbil sol.'
-      : 'S\'obrirà Google Calendar: prem «Afegir». Fas servir Outlook o Apple? Mira «Altres calendaris».';
+      ? 'S\'obrirà Google Calendar: prem «Afegir». Si al mòbil no et deixa, fes-ho un cop des de l'ordinador i apareixerà al mòbil sol.'
+      : 'S\'obrirà Google Calendar: prem «Afegir½. Fas servir Outlook o Apple? Mira «Altres calendaris».';
   }
 }
 $('#bCopy').addEventListener('click', async () => {
@@ -316,30 +317,9 @@ $('#bCopy').addEventListener('click', async () => {
 // ---------------------------------------------------------------- vista prèvia
 const DOW = ['dg', 'dl', 'dt', 'dc', 'dj', 'dv', 'ds'];
 const MON = ['gen', 'febr', 'març', 'abr', 'maig', 'juny', 'jul', 'ag', 'set', 'oct', 'nov', 'des'];
-const addMin = (hm, m) => { const [h, mi] = hm.split(':').map(Number); const t = h * 60 + mi + m; const x = ((t % 1440) + 1440) % 1440; return `${String(Math.floor(x / 60)).padStart(2, '0')}:${String(x % 60).padStart(2, '0')}`; };
+const addMin = (hm, m) => { const [h, mi] = hm.split(':').map(Number); const t = h * 60 + mi + m; const x = ((t % 1440) + 1440) % 1440; return `${String(Math.floor(x = 60)).padStart(2, '0')}:${String(x = 60).padStart(2, '0')}`; };
 let previewTimer, pollTimer;
 
-// Quan el servidor no pot accedir a la FCBQ (bloquejada per reCAPTCHA), el navegador
-// ho fa directament (te la cookie fcbqValidUntil) i envia l'HTML al servidor per parsejar.
-async function clientFetchMatches(team) {
-  const path = `/partits/calendari_equip_global/${team.clubId}/${team.id}`;
-  try {
-    const r = await fetch('https://www.basquetcatala.cat' + path, {
-      credentials: 'include',
-      headers: { 'Accept': 'text/html', 'Accept-Language': 'ca,es;q=0.8' },
-    });
-    if (!r.ok) return null;
-    const html = await r.text();
-    const res = await fetch(API + '/matches', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ clubId: team.clubId, teamId: team.id, html }),
-    });
-    if (!res.ok) return null;
-    const { matches } = await res.json();
-    return matches || [];
-  } catch { return null; }
-}
 
 async function renderPreview() {
   if (!state.teams.length) { $('#preview').innerHTML = '<div class="msg">Tria un equip per veure\'n els partits.</div>'; return; }
@@ -348,30 +328,21 @@ async function renderPreview() {
     const t = state.teams.map((x) => `${x.clubId}-${x.id}`).join(',');
     const data = await fetch(API + '/teams?t=' + t).then((r) => { if (!r.ok) throw new Error(); return r.json(); });
 
-    // Si el servidor no pot llegir la FCBQ, el navegador ho fa ell mateix
-    const needClientFetch = data.filter((d) => d.clientFetch && !d.matches.length);
-    if (needClientFetch.length) {
-      $('#preview').innerHTML = '<div class="msg">Carregant partits des de la FCBQ...</div>';
-      await Promise.all(needClientFetch.map(async (d) => {
-        const team = state.teams.find((x) => x.id === d.team.id) || d.team;
-        const matches = await clientFetchMatches(team);
-        if (matches && matches.length) { d.matches = matches; d.clientFetch = false; }
-      }));
-    }
-
     // completa noms si venim d'un enllaç compartit
     data.forEach((d) => { const s = state.teams.find((x) => x.id === d.team.id); if (s && /^Equip \d+$/.test(s.name)) { s.name = d.team.name; s.category = d.team.category; } });
     store.set('pc.teams', state.teams); renderSel(); renderLinks();
     clearTimeout(pollTimer);
-    if (data.some((d) => d.pending)) pollTimer = setTimeout(renderPreview, 20000);
+    // clientFetch i pending: la FCBQ no és accessible des del servidor ni des del navegador (CORS),
+    // el lector programat de GitHub Actions s'encarrega de llegir-los. Fem polling com amb pending.
+    if (data.some((d) => d.pending || d.clientFetch)) pollTimer = setTimeout(renderPreview, 20000);
     const today = new Date().toISOString().slice(0, 10);
     const all = data.flatMap((d) => d.matches).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
     const next = all.filter((m) => m.date >= today);
-    const pend = data.filter((d) => d.pending).map((d) => d.team.name);
+    const pend = data.filter((d) => d.pending || (d.clientFetch && !d.matches.length)).map((d) => d.team.name);
     const pendMsg = pend.length ? `<div class="msg" style="margin-bottom:8px">⏳ Carregant els partits de ${esc(pend.join(', '))} per primer cop (1–2 minuts). Ja pots afegir el calendari: s'omplirà sol.</div>` : '';
     if (!all.length) { $('#preview').innerHTML = pendMsg || '<div class="msg">La Federació encara no ha publicat partits per a aquest equip.</div>'; return; }
     const { c, p, d } = state.opts;
-    $('#preview').innerHTML = pendMsg + `<p class="muted" style="margin:0 0 6px;font-size:14px">${all.length} partits a la temporada · ${next.length} pendents</p>` +
+    $('#preview').innerHTML = pendMsg + `<p class="muted" style="margin:0 6px;font-size:14px">${all.length} partits a la temporada · ${next.length} pendents</p>` +
       next.slice(0, 8).map((m) => {
         const dt = new Date(m.date + 'T12:00:00');
         const home = m.homeId === m.teamId;
