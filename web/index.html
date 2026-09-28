@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ca">
 <head>
 <meta charset="utf-8">
@@ -318,12 +318,47 @@ const DOW = ['dg', 'dl', 'dt', 'dc', 'dj', 'dv', 'ds'];
 const MON = ['gen', 'febr', 'març', 'abr', 'maig', 'juny', 'jul', 'ag', 'set', 'oct', 'nov', 'des'];
 const addMin = (hm, m) => { const [h, mi] = hm.split(':').map(Number); const t = h * 60 + mi + m; const x = ((t % 1440) + 1440) % 1440; return `${String(Math.floor(x / 60)).padStart(2, '0')}:${String(x % 60).padStart(2, '0')}`; };
 let previewTimer, pollTimer;
+
+// Quan el servidor no pot accedir a la FCBQ (bloquejada per reCAPTCHA), el navegador
+// ho fa directament (te la cookie fcbqValidUntil) i envia l'HTML al servidor per parsejar.
+async function clientFetchMatches(team) {
+  const path = `/partits/calendari_equip_global/${team.clubId}/${team.id}`;
+  try {
+    const r = await fetch('https://www.basquetcatala.cat' + path, {
+      credentials: 'include',
+      headers: { 'Accept': 'text/html', 'Accept-Language': 'ca,es;q=0.8' },
+    });
+    if (!r.ok) return null;
+    const html = await r.text();
+    const res = await fetch(API + '/matches', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clubId: team.clubId, teamId: team.id, html }),
+    });
+    if (!res.ok) return null;
+    const { matches } = await res.json();
+    return matches || [];
+  } catch { return null; }
+}
+
 async function renderPreview() {
   if (!state.teams.length) { $('#preview').innerHTML = '<div class="msg">Tria un equip per veure\'n els partits.</div>'; return; }
   $('#preview').innerHTML = '<div class="msg">Carregant partits…</div>';
   try {
     const t = state.teams.map((x) => `${x.clubId}-${x.id}`).join(',');
     const data = await fetch(API + '/teams?t=' + t).then((r) => { if (!r.ok) throw new Error(); return r.json(); });
+
+    // Si el servidor no pot llegir la FCBQ, el navegador ho fa ell mateix
+    const needClientFetch = data.filter((d) => d.clientFetch && !d.matches.length);
+    if (needClientFetch.length) {
+      $('#preview').innerHTML = '<div class="msg">Carregant partits des de la FCBQ...</div>';
+      await Promise.all(needClientFetch.map(async (d) => {
+        const team = state.teams.find((x) => x.id === d.team.id) || d.team;
+        const matches = await clientFetchMatches(team);
+        if (matches && matches.length) { d.matches = matches; d.clientFetch = false; }
+      }));
+    }
+
     // completa noms si venim d'un enllaç compartit
     data.forEach((d) => { const s = state.teams.find((x) => x.id === d.team.id); if (s && /^Equip \d+$/.test(s.name)) { s.name = d.team.name; s.category = d.team.category; } });
     store.set('pc.teams', state.teams); renderSel(); renderLinks();
