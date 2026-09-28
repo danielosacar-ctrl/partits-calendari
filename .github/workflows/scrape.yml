@@ -1,0 +1,32 @@
+name: Llegir FCBQ
+
+on:
+  schedule:
+    - cron: '7 * * * *'     # cada hora: partits dels equips en ús
+    - cron: '37 2 * * *'    # cada nit: clubs i equips
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'matches, clubs o team'
+        default: matches
+      team:
+        description: 'club-equip (només per al mode team)'
+        default: ''
+
+concurrency:
+  group: scrape-${{ github.event.inputs.mode || (github.event.schedule == '37 2 * * *' && 'clubs' || 'matches') }}
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scraper/scrape.mjs ${{ github.event.inputs.mode || (github.event.schedule == '37 2 * * *' && 'clubs' || 'matches') }} ${{ github.event.inputs.team }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

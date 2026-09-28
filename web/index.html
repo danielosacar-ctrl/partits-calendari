@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Partits al Calendari</title>
+<meta name="description" content="Posa tots els partits de bàsquet dels teus fills al teu calendari, amb convocatòria, ubicació i actualització automàtica.">
+<meta name="theme-color" content="#111111">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<script src="config.js"></script>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{
+  --bg:#f6f6f3;--card:#fff;--ink:#111;--mut:#6b6b66;--line:#e4e4de;
+  --acc:#d8ff3c;--acc-ink:#111;--ok:#1f8a4c;--err:#b3261e;--r:16px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e0e0d;--card:#191917;--ink:#f3f3ee;--mut:#9a9a93;--line:#2b2b28;--ok:#6fd49a;--err:#ff8a80;
+}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:20px 16px 80px}
+header{display:flex;align-items:center;gap:12px;margin:8px 0 20px}
+header .logo{width:44px;height:44px;border-radius:12px;background:var(--acc);display:grid;place-items:center;font-size:24px;flex:none}
+h1{font-size:22px;line-height:1.15;margin:0;letter-spacing:-.01em}
+header p{margin:2px 0 0;color:var(--mut);font-size:14px}
+section{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 14px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:0 0 12px;display:flex;gap:8px;align-items:center}
+h2 .n{background:var(--ink);color:var(--card);width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px}
+input[type=search],input[type=number],input[type=text]{width:100%;font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+input:focus{outline:2px solid var(--ink);outline-offset:1px}
+.list{margin-top:8px;max-height:280px;overflow:auto;border-radius:12px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font:inherit;color:inherit}
+.item:hover{background:var(--bg)}
+.item small{color:var(--mut)}
+.cat{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;padding:14px 4px 4px}
+.team{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:10px;cursor:pointer}
+.team:hover{background:var(--bg)}
+.team input{width:20px;height:20px;accent-color:#111;flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:9px 14px;font:inherit;font-size:15px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.sel{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sel span{background:var(--acc);color:var(--acc-ink);border-radius:999px;padding:6px 8px 6px 12px;font-size:14px;display:inline-flex;gap:6px;align-items:center}
+.sel button{border:0;background:rgba(0,0,0,.12);border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:13px;color:inherit}
+.row{margin:0 0 16px}.row:last-child{margin:0}
+.row label.t{display:block;font-weight:600;margin:0 0 8px}
+.row .hint{color:var(--mut);font-size:13px;margin-top:6px}
+.custom{display:none;margin-top:8px;max-width:160px}
+.btns{display:grid;gap:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:14px;font:inherit;font-weight:600;text-decoration:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.btn.big{font-size:17px;padding:18px}
+.opts{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.opts summary{cursor:pointer;font-weight:600;color:var(--mut);font-size:15px}
+.optsBody{padding-top:14px}
+.btn[aria-disabled=true]{opacity:.4;pointer-events:none}
+.copy{display:flex;gap:8px;margin-top:4px}
+.copy input{font-size:13px}
+.copy .btn{padding:10px 14px;flex:none}
+.note{font-size:13px;color:var(--mut);margin:12px 0 0}
+.match{display:grid;grid-template-columns:62px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.match:last-child{border:0}
+.date{text-align:center;background:var(--bg);border-radius:12px;padding:6px 4px;line-height:1.1}
+.date b{display:block;font-size:20px}
+.date small{color:var(--mut);font-size:11px;text-transform:uppercase}
+.m-t{font-weight:600}
+.m-s{font-size:14px;color:var(--mut)}
+.m-s a{color:inherit}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--bg);border:1px solid var(--line);margin-right:6px}
+.msg{padding:12px;border-radius:12px;background:var(--bg);color:var(--mut);font-size:14px}
+.msg.err{color:var(--err)}
+.muted{color:var(--mut)}
+footer{text-align:center;color:var(--mut);font-size:12px;margin-top:24px}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="logo" aria-hidden="true">🏀</div>
+    <div>
+      <h1>Partits al Calendari</h1>
+      <p>Tots els partits de la temporada al teu calendari, amb ubicació i convocatòria.</p>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span> Tria els equips</h2>
+    <input type="search" id="q" placeholder="Busca el club (ex. 3 Viles, Boet, Mataró…)" autocomplete="off">
+    <div class="list" id="clubs"></div>
+    <div id="teams"></div>
+    <div class="sel" id="sel"></div>
+  </section>
+
+  <section id="add">
+    <h2><span class="n">2</span> Afegeix-ho al calendari</h2>
+    <a class="btn pri big" id="bMain" aria-disabled="true">📅 Afegir tots els partits al meu calendari</a>
+    <p class="note" id="mainNote">Tria primer un equip.</p>
+    <details class="opts">
+      <summary>Personalitzar horaris · <span id="optSum"></span></summary>
+      <div class="optsBody">
+    <div class="row">
+      <label class="t">Convocatòria abans del partit</label>
+      <div class="chips" data-k="c" data-opts="0,30,45,60,90"></div>
+      <input class="custom" type="number" min="0" max="180" step="5" data-custom="c" placeholder="minuts">
+    </div>
+    <div class="row">
+      <label class="t">Després del partit (estiraments i dutxa)</label>
+      <div class="chips" data-k="p" data-opts="0,15,30,45,60"></div>
+      <input class="custom" type="number" min="0" max="120" step="5" data-custom="p" placeholder="minuts">
+    </div>
+    <div class="row">
+      <label class="t">Durada del partit</label>
+      <div class="chips" data-k="d" data-opts="75,90,105,120"></div>
+      <div class="hint">Mini i premini solen durar uns 75–90 minuts; categories grans, més.</div>
+    </div>
+    <div class="row">
+      <label class="t">Avís al mòbil</label>
+      <div class="chips" data-k="a" data-opts="0,60,120,1440"></div>
+    </div>
+      </div>
+    </details>
+    <details class="opts">
+      <summary>Altres calendaris i compartir</summary>
+      <div class="optsBody">
+        <div class="btns">
+          <a class="btn" id="bGoogle" target="_blank" rel="noopener">Google Calendar</a>
+          <a class="btn" id="bApple">Apple (iPhone, iPad, Mac)</a>
+          <a class="btn" id="bOutlook" target="_blank" rel="noopener">Outlook</a>
+          <a class="btn" id="bFile">Descarregar fitxer .ics (no s'actualitza)</a>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <label class="t">Enllaç del calendari</label>
+          <div class="copy"><input type="text" id="link" readonly><button class="btn" id="bCopy" type="button">Copiar</button></div>
+          <div class="hint">Per enviar-lo a l'altre progenitor o a qui porti els nens.</div>
+        </div>
+      </div>
+    </details>
+    <p class="note">El calendari queda <b>subscrit</b>: si la Federació canvia un horari o una pista, es corregeix sol (Google pot trigar unes hores a refrescar-lo).</p>
+  </section>
+
+  <section>
+    <h2>Propers partits</h2>
+    <div id="preview"><div class="msg">Tria un equip per veure'n els partits.</div></div>
+  </section>
+
+  <footer>Dades públiques de la Federació Catalana de Basquetbol (basquetcatala.cat). Eina no oficial.</footer>
+</main>
+
+<script>
+const API = (window.API_BASE || '/api').replace(/\/$/, '');
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+
+const LABELS = {
+  c: (v) => (v == 0 ? 'Sense' : v >= 60 && v % 60 === 0 ? `${v / 60} h` : v > 60 ? `${Math.floor(v / 60)} h ${v % 60}'` : `${v} min`),
+  p: (v) => (v == 0 ? 'Res' : `${v} min`),
+  d: (v) => (v >= 60 ? `${Math.floor(v / 60)} h${v % 60 ? ' ' + (v % 60) + "'" : ''}` : `${v} min`),
+  a: (v) => (v == 0 ? 'Cap' : v == 1440 ? 'El dia abans' : `${v / 60} h abans`),
+};
+
+const state = {
+  teams: store.get('pc.teams', []), // [{clubId,id,name,category}]
+  opts: Object.assign({ c: 45, p: 30, d: 90, a: 0 }, store.get('pc.opts', {})),
+};
+// enllaç compartit: ?t=club-equip,...&c=..&p=..
+(() => {
+  const u = new URLSearchParams(location.search);
+  if (u.get('t')) {
+    state.teams = u.get('t').split(',').map((x) => { const [clubId, id] = x.split('-'); return { clubId, id, name: `Equip ${id}`, category: '' }; });
+  }
+  for (const k of ['c', 'p', 'd', 'a']) if (u.get(k) != null) state.opts[k] = +u.get(k);
+})();
+
+// ---------------------------------------------------------------- opcions
+function renderChips() {
+  document.querySelectorAll('.chips').forEach((box) => {
+    const k = box.dataset.k;
+    const opts = box.dataset.opts.split(',').map(Number);
+    const custom = $(`[data-custom="${k}"]`);
+    const isCustom = !opts.includes(state.opts[k]);
+    box.innerHTML = opts.map((v) => `<button type="button" class="chip" data-v="${v}" aria-pressed="${!isCustom && state.opts[k] === v}">${LABELS[k](v)}</button>`).join('') +
+      (custom ? `<button type="button" class="chip" data-v="x" aria-pressed="${isCustom}">Altre</button>` : '');
+    if (custom) { custom.style.display = isCustom ? 'block' : 'none'; if (isCustom) custom.value = state.opts[k]; }
+  });
+}
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  const k = chip.parentElement.dataset.k;
+  if (chip.dataset.v === 'x') {
+    const inp = $(`[data-custom="${k}"]`); inp.style.display = 'block'; inp.focus();
+    chip.parentElement.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', c === chip));
+    return;
+  }
+  state.opts[k] = +chip.dataset.v;
+  renderChips(); update();
+});
+document.querySelectorAll('[data-custom]').forEach((inp) => inp.addEventListener('input', () => {
+  const v = parseInt(inp.value, 10);
+  if (Number.isFinite(v)) { state.opts[inp.dataset.custom] = v; update(false); }
+}));
+
+// ---------------------------------------------------------------- clubs i equips
+let CLUBS = [];
+const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+async function loadClubs() {
+  try {
+    const r = await fetch(API + '/clubs');
+    CLUBS = await r.json();
+    if (!Array.isArray(CLUBS)) throw new Error();
+  } catch { $('#clubs').innerHTML = '<div class="msg err">No s\'ha pogut carregar la llista de clubs. Torna-ho a provar.</div>'; }
+}
+$('#q').addEventListener('input', () => {
+  const q = norm($('#q').value.trim());
+  if (q.length < 2) { $('#clubs').innerHTML = ''; return; }
+  const words = q.split(/\s+/);
+  const res = CLUBS.filter((c) => { const h = norm(c.name + ' ' + c.town); return words.every((w) => h.includes(w)); }).slice(0, 30);
+  $('#clubs').innerHTML = res.length
+    ? res.map((c) => `<button type="button" class="item" data-club="${esc(c.id)}"><span>${esc(c.name)}</span><small>${esc(c.town)}</small></button>`).join('')
+    : '<div class="msg">Cap club coincideix.</div>';
+});
+$('#clubs').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-club]');
+  if (!b) return;
+  const clubId = b.dataset.club;
+  const club = CLUBS.find((c) => c.id === clubId);
+  $('#clubs').innerHTML = '';
+  $('#q').value = club ? club.name : '';
+  $('#teams').innerHTML = '<div class="msg">Carregant equips…</div>';
+  try {
+    const r = await fetch(`${API}/club/${clubId}`);
+    const { teams, pending } = await r.json();
+    if (pending) {
+      $('#teams').innerHTML = '<div class="msg">Estem carregant els equips d\'aquest club per primer cop. Torna-ho a provar en un parell de minuts.</div>';
+      return;
+    }
+    if (!teams || !teams.length) throw new Error();
+    const byCat = {};
+    teams.forEach((t) => (byCat[t.category] ||= []).push(t));
+    $('#teams').innerHTML = Object.entries(byCat).map(([cat, ts]) =>
+      `<div class="cat">${esc(cat)}</div>` + ts.map((t) => {
+        const on = state.teams.some((x) => x.id === t.id);
+        return `<label class="team"><input type="checkbox" data-team='${esc(JSON.stringify({ clubId, id: t.id, name: t.name, category: t.category }))}' ${on ? 'checked' : ''}><span>${esc(t.name)}</span></label>`;
+      }).join('')).join('');
+  } catch { $('#teams').innerHTML = '<div class="msg err">No s\'han pogut carregar els equips d\'aquest club.</div>'; }
+});
+$('#teams').addEventListener('change', (e) => {
+  const cb = e.target.closest('[data-team]');
+  if (!cb) return;
+  const t = JSON.parse(cb.dataset.team);
+  state.teams = state.teams.filter((x) => x.id !== t.id);
+  if (cb.checked) {
+    if (state.teams.length >= 10) { cb.checked = false; alertMsg('Màxim 10 equips per calendari.'); return; }
+    state.teams.push(t);
+  }
+  update();
+});
+$('#sel').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-rm]');
+  if (!b) return;
+  state.teams = state.teams.filter((x) => x.id !== b.dataset.rm);
+  const cb = document.querySelector(`#teams input[data-team*='"id":"${b.dataset.rm}"']`);
+  if (cb) cb.checked = false;
+  update();
+});
+function alertMsg(t) { $('#preview').innerHTML = `<div class="msg err">${esc(t)}</div>`; }
+
+// ---------------------------------------------------------------- enllaços
+function feedUrl(proto = 'https:') {
+  const t = state.teams.map((x) => `${x.clubId}-${x.id}`).join(',');
+  const q = new URLSearchParams({ t, c: state.opts.c, p: state.opts.p, d: state.opts.d });
+  if (state.opts.a) q.set('a', state.opts.a);
+  const u = new URL(`${API}/cal.ics?${q}`, location.href);
+  return proto + u.href.slice(u.protocol.length);
+}
+const UA = navigator.userAgent;
+const DEVICE = /iPhone|iPad|iPod/.test(UA) || (/Macintosh/.test(UA) && !/Chrome|Firefox/.test(UA)) ? 'apple' : /Android/.test(UA) ? 'android' : 'other';
+function renderLinks() {
+  const has = state.teams.length > 0;
+  ['bMain', 'bGoogle', 'bApple', 'bOutlook', 'bFile', 'bCopy'].forEach((id) => $('#' + id).setAttribute('aria-disabled', !has));
+  const o = state.opts;
+  $('#optSum').textContent = `convocatòria ${LABELS.c(o.c).toLowerCase()}, després ${LABELS.p(o.p).toLowerCase()}`;
+  if (!has) { $('#link').value = ''; $('#mainNote').textContent = 'Tria primer un equip.'; $('#bMain').removeAttribute('href'); return; }
+  const https = feedUrl('https:');
+  const webcal = feedUrl('webcal:');
+  const name = state.teams.map((t) => t.name).join(' + ');
+  $('#bGoogle').href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(webcal);
+  $('#bApple').href = webcal;
+  $('#bOutlook').href = 'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(https) + '&name=' + encodeURIComponent('🏀 ' + name);
+  $('#bFile').href = https + '&dl=1';
+  $('#link').value = https;
+  const main = $('#bMain');
+  if (DEVICE === 'apple') {
+    main.href = webcal; main.removeAttribute('target');
+    $('#mainNote').textContent = 'S\'obrirà el Calendari de l\'iPhone/Mac: prem «Subscriure\'s».';
+  } else {
+    main.href = $('#bGoogle').href; main.target = '_blank';
+    $('#mainNote').textContent = DEVICE === 'android'
+      ? 'S\'obrirà Google Calendar: prem «Afegir». Si al mòbil no et deixa, fes-ho un cop des de l\'ordinador i apareixerà al mòbil sol.'
+      : 'S\'obrirà Google Calendar: prem «Afegir». Fas servir Outlook o Apple? Mira «Altres calendaris».';
+  }
+}
+$('#bCopy').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText($('#link').value); } catch { $('#link').select(); document.execCommand('copy'); }
+  $('#bCopy').textContent = 'Copiat ✓'; setTimeout(() => ($('#bCopy').textContent = 'Copiar'), 1500);
+});
+
+// ---------------------------------------------------------------- vista prèvia
+const DOW = ['dg', 'dl', 'dt', 'dc', 'dj', 'dv', 'ds'];
+const MON = ['gen', 'febr', 'març', 'abr', 'maig', 'juny', 'jul', 'ag', 'set', 'oct', 'nov', 'des'];
+const addMin = (hm, m) => { const [h, mi] = hm.split(':').map(Number); const t = h * 60 + mi + m; const x = ((t % 1440) + 1440) % 1440; return `${String(Math.floor(x / 60)).padStart(2, '0')}:${String(x % 60).padStart(2, '0')}`; };
+let previewTimer, pollTimer;
+async function renderPreview() {
+  if (!state.teams.length) { $('#preview').innerHTML = '<div class="msg">Tria un equip per veure\'n els partits.</div>'; return; }
+  $('#preview').innerHTML = '<div class="msg">Carregant partits…</div>';
+  try {
+    const t = state.teams.map((x) => `${x.clubId}-${x.id}`).join(',');
+    const data = await fetch(API + '/teams?t=' + t).then((r) => { if (!r.ok) throw new Error(); return r.json(); });
+    // completa noms si venim d'un enllaç compartit
+    data.forEach((d) => { const s = state.teams.find((x) => x.id === d.team.id); if (s && /^Equip \d+$/.test(s.name)) { s.name = d.team.name; s.category = d.team.category; } });
+    store.set('pc.teams', state.teams); renderSel(); renderLinks();
+    clearTimeout(pollTimer);
+    if (data.some((d) => d.pending)) pollTimer = setTimeout(renderPreview, 20000);
+    const today = new Date().toISOString().slice(0, 10);
+    const all = data.flatMap((d) => d.matches).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+    const next = all.filter((m) => m.date >= today);
+    const pend = data.filter((d) => d.pending).map((d) => d.team.name);
+    const pendMsg = pend.length ? `<div class="msg" style="margin-bottom:8px">⏳ Carregant els partits de ${esc(pend.join(', '))} per primer cop (1–2 minuts). Ja pots afegir el calendari: s'omplirà sol.</div>` : '';
+    if (!all.length) { $('#preview').innerHTML = pendMsg || '<div class="msg">La Federació encara no ha publicat partits per a aquest equip.</div>'; return; }
+    const { c, p, d } = state.opts;
+    $('#preview').innerHTML = pendMsg + `<p class="muted" style="margin:0 0 6px;font-size:14px">${all.length} partits a la temporada · ${next.length} pendents</p>` +
+      next.slice(0, 8).map((m) => {
+        const dt = new Date(m.date + 'T12:00:00');
+        const home = m.homeId === m.teamId;
+        const hasT = m.time && m.time !== '00:00';
+        const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(`${m.venue}, ${m.address}, Catalunya`);
+        return `<div class="match"><div class="date"><small>${DOW[dt.getDay()]}</small><b>${dt.getDate()}</b><small>${MON[dt.getMonth()]}</small></div>
+          <div><div class="m-t">${esc(m.home)} – ${esc(m.away)}</div>
+          <div class="m-s"><span class="tag">${home ? 'Casa' : 'Fora'}</span>${hasT ? `${c ? `Convocatòria <b>${addMin(m.time, -c)}</b> · ` : ''}Partit <b>${m.time}</b> · Sortida ~${addMin(m.time, d + p)}` : 'Hora pendent'}</div>
+          <div class="m-s">📍 <a href="${maps}" target="_blank" rel="noopener">${esc(m.venue)}${m.address ? ', ' + esc(m.address) : ''}</a></div></div></div>`;
+      }).join('') + (next.length > 8 ? `<p class="note">…i ${next.length - 8} partits més.</p>` : '');
+  } catch { alertMsg('Ara mateix no es pot llegir la web de la Federació. Torna-ho a provar d\'aquí a una estona.'); }
+}
+
+function renderSel() {
+  $('#sel').innerHTML = state.teams.map((t) => `<span>${esc(t.name)}${t.category ? ` <small style="opacity:.7">· ${esc(t.category.replace(/^C\.[CT]\.\s*/, ''))}</small>` : ''}<button type="button" data-rm="${esc(t.id)}" aria-label="Treure">✕</button></span>`).join('');
+}
+function update(refreshChips = true) {
+  store.set('pc.teams', state.teams); store.set('pc.opts', state.opts);
+  if (refreshChips) renderChips();
+  renderSel(); renderLinks();
+  clearTimeout(previewTimer); previewTimer = setTimeout(renderPreview, 250);
+}
+
+renderChips(); update(); loadClubs();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
