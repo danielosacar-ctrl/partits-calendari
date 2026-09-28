@@ -50,7 +50,9 @@ async function matches() {
 }
 
 async function clubs() {
-  const all = parseClubs(JSON.parse(await fetchFcbq('/clubs/ajax')));
+  const raw = await fetchFcbq('/clubs/ajax');
+  console.log('clubs/ajax resposta (primers 200 chars):', raw.slice(0, 200));
+  const all = parseClubs(JSON.parse(raw));
   if (all.length < 50) throw new Error(`Només ${all.length} clubs: sembla que la lectura ha fallat`);
   await db.upsert('clubs', all.map((c) => ({ ...c, updated_at: new Date().toISOString() })), 'id');
   console.log(`${all.length} clubs desats`);
