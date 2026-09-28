@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Partits al Calendari</title>
-<meta name="description" content="Posa tots els partits de bàsquet dels teus fills al teu calendari, amb convocatòria, ubicació i actualització automàtica.">
+<meta name="description" content="Posa tots els partits de bÃ squet dels teus fills al teu calendari, amb convocatÃ²ria, ubicaciÃ³ i actualitzaciÃ³ automÃ tica.">
 <meta name="theme-color" content="#111111">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -25,7 +25,7 @@ main{max-width:640px;margin:0 auto;padding:20px 16px 80px}
 header{display:flex;align-items:center;gap:12px;margin:8px 0 20px}
 header .logo{width:44px;height:44px;border-radius:12px;background:var(--acc);display:grid;place-items:center;font-size:24px;flex:none}
 h1{font-size:22px;line-height:1.15;margin:0;letter-spacing:-.01em}
-header p{margin:,px 0 0;color:var(--mut);font-size:14px}
+header p{margin:2px 0 0;color:var(--mut);font-size:14px}
 section{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 14px}
 h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:0 0 12px;display:flex;gap:8px;align-items:center}
 h2 .n{background:var(--ink);color:var(--card);width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px}
@@ -79,16 +79,16 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:24px}
 <body>
 <main>
   <header>
-    <div class="logo" aria-hidden="true">🏀</div>
+    <div class="logo" aria-hidden="true">ð</div>
     <div>
       <h1>Partits al Calendari</h1>
-      <p>Tots els partits de la temporada al teu calendari, amb ubicació i convocatòria.</p>
+      <p>Tots els partits de la temporada al teu calendari, amb ubicaciÃ³ i convocatÃ²ria.</p>
     </div>
   </header>
 
   <section>
     <h2><span class="n">1</span> Tria els equips</h2>
-    <input type="search" id="q" placeholder="Busca el club (ex. 3 Viles, Boet, Mataró…)" autocomplete="off">
+    <input type="search" id="q" placeholder="Busca el club (ex. 3 Viles, Boet, MatarÃ³â¦)" autocomplete="off">
     <div class="list" id="clubs"></div>
     <div id="teams"></div>
     <div class="sel" id="sel"></div>
@@ -96,28 +96,28 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:24px}
 
   <section id="add">
     <h2><span class="n">2</span> Afegeix-ho al calendari</h2>
-    <a class="btn pri big" id="bMain" aria-disabled="true">📅 Afegir tots els partits al meu calendari</a>
+    <a class="btn pri big" id="bMain" aria-disabled="true">ð Afegir tots els partits al meu calendari</a>
     <p class="note" id="mainNote">Tria primer un equip.</p>
     <details class="opts">
-      <summary>Personalitzar horaris · <span id="optSum"></span></summary>
+      <summary>Personalitzar horaris Â· <span id="optSum"></span></summary>
       <div class="optsBody">
     <div class="row">
-      <label class="t">Convocatòria abans del partit</label>
+      <label class="t">ConvocatÃ²ria abans del partit</label>
       <div class="chips" data-k="c" data-opts="0,30,45,60,90"></div>
       <input class="custom" type="number" min="0" max="180" step="5" data-custom="c" placeholder="minuts">
     </div>
     <div class="row">
-      <label class="t">Després del partit (estiraments i dutxa)</label>
+      <label class="t">DesprÃ©s del partit (estiraments i dutxa)</label>
       <div class="chips" data-k="p" data-opts="0,15,30,45,60"></div>
       <input class="custom" type="number" min="0" max="120" step="5" data-custom="p" placeholder="minuts">
     </div>
     <div class="row">
       <label class="t">Durada del partit</label>
       <div class="chips" data-k="d" data-opts="75,90,105,120"></div>
-      <div class="hint">Mini i premini solen durar uns 75–90 minuts; categories grans, més.</div>
+      <div class="hint">Mini i premini solen durar uns 75â90 minuts; categories grans, mÃ©s.</div>
     </div>
     <div class="row">
-      <label class="t">Avís al mòbil</label>
+      <label class="t">AvÃ­s al mÃ²bil</label>
       <div class="chips" data-k="a" data-opts="0,60,120,1440"></div>
     </div>
       </div>
@@ -132,13 +132,13 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:24px}
           <a class="btn" id="bFile">Descarregar fitxer .ics (no s'actualitza)</a>
         </div>
         <div class="row" style="margin-top:14px">
-          <label class="t">Enllaç del calendari</label>
+          <label class="t">EnllaÃ§ del calendari</label>
           <div class="copy"><input type="text" id="link" readonly><button class="btn" id="bCopy" type="button">Copiar</button></div>
           <div class="hint">Per enviar-lo a l'altre progenitor o a qui porti els nens.</div>
         </div>
       </div>
     </details>
-    <p class="note">El calendari queda <b>subscrit</b>: si la Federació canvia un horari o una pista, es corregeix sol (Google pot trigar unes hores a refrescar-lo).</p>
+    <p class="note">El calendari queda <b>subscrit</b>: si la FederaciÃ³ canvia un horari o una pista, es corregeix sol (Google pot trigar unes hores a refrescar-lo).</p>
   </section>
 
   <section>
@@ -146,7 +146,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:24px}
     <div id="preview"><div class="msg">Tria un equip per veure'n els partits.</div></div>
   </section>
 
-  <footer>Dades públiques de la Federació Catalana de Basquetbol (basquetcatala.cat). Eina no oficial.</footer>
+  <footer>Dades pÃºbliques de la FederaciÃ³ Catalana de Basquetbol (basquetcatala.cat). Eina no oficial.</footer>
 </main>
 
 <script>
@@ -169,7 +169,7 @@ const state = {
   teams: store.get('pc.teams', []), // [{clubId,id,name,category}]
   opts: Object.assign({ c: 45, p: 30, d: 90, a: 0 }, store.get('pc.opts', {})),
 };
-// enllaç compartit: ?t=club-equip,...&c=..&p=..
+// enllaÃ§ compartit: ?t=club-equip,...&c=..&p=..
 (() => {
   const u = new URLSearchParams(location.search);
   if (u.get('t')) {
@@ -209,9 +209,9 @@ document.querySelectorAll('[data-custom]').forEach((inp) => inp.addEventListener
 
 // ---------------------------------------------------------------- clubs i equips
 let CLUBS = [];
-const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const norm = (s) => s.normalize('NFD').replace(/[Ì-Í¯]/g, '').toLowerCase();
 
-arync function loadClubs() {
+async function loadClubs() {
   try {
     const r = await fetch(API + '/clubs');
     CLUBS = await r.json();
@@ -234,7 +234,7 @@ $('#clubs').addEventListener('click', async (e) => {
   const club = CLUBS.find((c) => c.id === clubId);
   $('#clubs').innerHTML = '';
   $('#q').value = club ? club.name : '';
-  $('#teams').innerHTML = '<div class="msg">Carregant equips…</div>';
+  $('#teams').innerHTML = '<div class="msg">Carregant equipsâ¦</div>';
   try {
     const r = await fetch(`${API}/club/${clubId}`);
     const { teams } = await r.json();
@@ -244,7 +244,7 @@ $('#clubs').addEventListener('click', async (e) => {
 });
 
 function renderTeams(clubId, teams) {
-  if (!teams || !teams.length) { $('#teams').innerHTML = '<div class="msg">Aquest club no té equips registrats.</div>'; return; }
+  if (!teams || !teams.length) { $('#teams').innerHTML = '<div class="msg">Aquest club no tÃ© equips registrats.</div>'; return; }
   const byCat = {};
   teams.forEach((t) => (byCat[t.category] ||= []).push(t));
   $('#teams').innerHTML = Object.entries(byCat).map(([cat, ts]) =>
@@ -259,7 +259,7 @@ $('#teams').addEventListener('change', (e) => {
   const t = JSON.parse(cb.dataset.team);
   state.teams = state.teams.filter((x) => x.id !== t.id);
   if (cb.checked) {
-    if (state.teams.length >= 10) { cb.checked = false; alertMsg('Màxim 10 equips per calendari.'); return; }
+    if (state.teams.length >= 10) { cb.checked = false; alertMsg('MÃ xim 10 equips per calendari.'); return; }
     state.teams.push(t);
   }
   update();
@@ -274,7 +274,7 @@ $('#sel').addEventListener('click', (e) => {
 });
 function alertMsg(t) { $('#preview').innerHTML = `<div class="msg err">${esc(t)}</div>`; }
 
-// ---------------------------------------------------------------- enllaços
+// ---------------------------------------------------------------- enllaÃ§os
 function feedUrl(proto = 'https:') {
   const t = state.teams.map((x) => `${x.clubId}-${x.id}`).join(',');
   const q = new URLSearchParams({ t, c: state.opts.c, p: state.opts.p, d: state.opts.d });
@@ -288,76 +288,76 @@ function renderLinks() {
   const has = state.teams.length > 0;
   ['bMain', 'bGoogle', 'bApple', 'bOutlook', 'bFile', 'bCopy'].forEach((id) => $('#' + id).setAttribute('aria-disabled', !has));
   const o = state.opts;
-  $('#optSum').textContent = `convocatòria ${LABELS.c(o.c).toLowerCase()}, després ${LABELS.p(o.p).toLowerCase()}`;
+  $('#optSum').textContent = `convocatÃ²ria ${LABELS.c(o.c).toLowerCase()}, desprÃ©s ${LABELS.p(o.p).toLowerCase()}`;
   if (!has) { $('#link').value = ''; $('#mainNote').textContent = 'Tria primer un equip.'; $('#bMain').removeAttribute('href'); return; }
   const https = feedUrl('https:');
   const webcal = feedUrl('webcal:');
   const name = state.teams.map((t) => t.name).join(' + ');
   $('#bGoogle').href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(webcal);
   $('#bApple').href = webcal;
-  $('#bOutlook').href = 'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(https) + '&name=' + encodeURIComponent('🏀 ' + name);
+  $('#bOutlook').href = 'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(https) + '&name=' + encodeURIComponent('ð ' + name);
   $('#bFile').href = https + '&dl=1';
   $('#link').value = https;
   const main = $('#bMain');
   if (DEVICE === 'apple') {
     main.href = webcal; main.removeAttribute('target');
-    $('#mainNote').textContent = 'S\'obrirà el Calendari de l\'iPhone/Mac: prem «Subscriure\'s».';
+    $('#mainNote').textContent = 'S\'obrirÃ  el Calendari de l\'iPhone/Mac: prem Â«Subscriure\'sÂ».';
   } else {
     main.href = $('#bGoogle').href; main.target = '_blank';
     $('#mainNote').textContent = DEVICE === 'android'
-      ? 'S\'obrirà Google Calendar: prem «Afegir». Si al mòbil no et deixa, fes-ho un cop des de l'ordinador i apareixerà al mòbil sol.'
-      : 'S\'obrirà Google Calendar: prem «Afegir½. Fas servir Outlook o Apple? Mira «Altres calendaris».';
+      ? 'S\'obrirÃ  Google Calendar: prem Â«AfegirÂ». Si al mÃ²bil no et deixa, fes-ho un cop des de l\'ordinador i apareixerÃ  al mÃ²bil sol.'
+      : 'S\'obrirÃ  Google Calendar: prem Â«AfegirÂ». Fas servir Outlook o Apple? Mira Â«Altres calendarisÂ».';
   }
 }
 $('#bCopy').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText($('#link').value); } catch { $('#link').select(); document.execCommand('copy'); }
-  $('#bCopy').textContent = 'Copiat ✓'; setTimeout(() => ($('#bCopy').textContent = 'Copiar'), 1500);
+  $('#bCopy').textContent = 'Copiat â'; setTimeout(() => ($('#bCopy').textContent = 'Copiar'), 1500);
 });
 
-// ---------------------------------------------------------------- vista prèvia
+// ---------------------------------------------------------------- vista prÃ¨via
 const DOW = ['dg', 'dl', 'dt', 'dc', 'dj', 'dv', 'ds'];
-const MON = ['gen', 'febr', 'març', 'abr', 'maig', 'juny', 'jul', 'ag', 'set', 'oct', 'nov', 'des'];
-const addMin = (hm, m) => { const [h, mi] = hm.split(':').map(Number); const t = h * 60 + mi + m; const x = ((t % 1440) + 1440) % 1440; return `${String(Math.floor(x = 60)).padStart(2, '0')}:${String(x = 60).padStart(2, '0')}`; };
+const MON = ['gen', 'febr', 'marÃ§', 'abr', 'maig', 'juny', 'jul', 'ag', 'set', 'oct', 'nov', 'des'];
+const addMin = (hm, m) => { const [h, mi] = hm.split(':').map(Number); const t = h * 60 + mi + m; const x = ((t % 1440) + 1440) % 1440; return `${String(Math.floor(x / 60)).padStart(2, '0')}:${String(x % 60).padStart(2, '0')}`; };
 let previewTimer, pollTimer;
 
 
 async function renderPreview() {
   if (!state.teams.length) { $('#preview').innerHTML = '<div class="msg">Tria un equip per veure\'n els partits.</div>'; return; }
-  $('#preview').innerHTML = '<div class="msg">Carregant partits…</div>';
+  $('#preview').innerHTML = '<div class="msg">Carregant partitsâ¦</div>';
   try {
     const t = state.teams.map((x) => `${x.clubId}-${x.id}`).join(',');
     const data = await fetch(API + '/teams?t=' + t).then((r) => { if (!r.ok) throw new Error(); return r.json(); });
 
-    // completa noms si venim d'un enllaç compartit
+    // completa noms si venim d'un enllaÃ§ compartit
     data.forEach((d) => { const s = state.teams.find((x) => x.id === d.team.id); if (s && /^Equip \d+$/.test(s.name)) { s.name = d.team.name; s.category = d.team.category; } });
     store.set('pc.teams', state.teams); renderSel(); renderLinks();
     clearTimeout(pollTimer);
-    // clientFetch i pending: la FCBQ no és accessible des del servidor ni des del navegador (CORS),
+    // clientFetch i pending: la FCBQ no Ã©s accessible des del servidor ni des del navegador (CORS),
     // el lector programat de GitHub Actions s'encarrega de llegir-los. Fem polling com amb pending.
     if (data.some((d) => d.pending || d.clientFetch)) pollTimer = setTimeout(renderPreview, 20000);
     const today = new Date().toISOString().slice(0, 10);
     const all = data.flatMap((d) => d.matches).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
     const next = all.filter((m) => m.date >= today);
     const pend = data.filter((d) => d.pending || (d.clientFetch && !d.matches.length)).map((d) => d.team.name);
-    const pendMsg = pend.length ? `<div class="msg" style="margin-bottom:8px">⏳ Carregant els partits de ${esc(pend.join(', '))} per primer cop (1–2 minuts). Ja pots afegir el calendari: s'omplirà sol.</div>` : '';
-    if (!all.length) { $('#preview').innerHTML = pendMsg || '<div class="msg">La Federació encara no ha publicat partits per a aquest equip.</div>'; return; }
+    const pendMsg = pend.length ? `<div class="msg" style="margin-bottom:8px">â³ Carregant els partits de ${esc(pend.join(', '))} per primer cop (1â2 minuts). Ja pots afegir el calendari: s'omplirÃ  sol.</div>` : '';
+    if (!all.length) { $('#preview').innerHTML = pendMsg || '<div class="msg">La FederaciÃ³ encara no ha publicat partits per a aquest equip.</div>'; return; }
     const { c, p, d } = state.opts;
-    $('#preview').innerHTML = pendMsg + `<p class="muted" style="margin:0 6px;font-size:14px">${all.length} partits a la temporada · ${next.length} pendents</p>` +
+    $('#preview').innerHTML = pendMsg + `<p class="muted" style="margin:0 0 6px;font-size:14px">${all.length} partits a la temporada Â· ${next.length} pendents</p>` +
       next.slice(0, 8).map((m) => {
         const dt = new Date(m.date + 'T12:00:00');
         const home = m.homeId === m.teamId;
         const hasT = m.time && m.time !== '00:00';
         const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(`${m.venue}, ${m.address}, Catalunya`);
         return `<div class="match"><div class="date"><small>${DOW[dt.getDay()]}</small><b>${dt.getDate()}</b><small>${MON[dt.getMonth()]}</small></div>
-          <div><div class="m-t">${esc(m.home)} – ${esc(m.away)}</div>
-          <div class="m-s"><span class="tag">${home ? 'Casa' : 'Fora'}</span>${hasT ? `${c ? `Convocatòria <b>${addMin(m.time, -c)}</b> · ` : ''}Partit <b>${m.time}</b> · Sortida ~${addMin(m.time, d + p)}` : 'Hora pendent'}</div>
-          <div class="m-s">📍 <a href="${maps}" target="_blank" rel="noopener">${esc(m.venue)}${m.address ? ', ' + esc(m.address) : ''}</a></div></div></div>`;
-      }).join('') + (next.length > 8 ? `<p class="note">…i ${next.length - 8} partits més.</p>` : '');
-  } catch { alertMsg('Ara mateix no es pot llegir la web de la Federació. Torna-ho a provar d\'aquí a una estona.'); }
+          <div><div class="m-t">${esc(m.home)} â ${esc(m.away)}</div>
+          <div class="m-s"><span class="tag">${home ? 'Casa' : 'Fora'}</span>${hasT ? `${c ? `ConvocatÃ²ria <b>${addMin(m.time, -c)}</b> Â· ` : ''}Partit <b>${m.time}</b> Â· Sortida ~${addMin(m.time, d + p)}` : 'Hora pendent'}</div>
+          <div class="m-s">ð <a href="${maps}" target="_blank" rel="noopener">${esc(m.venue)}${m.address ? ', ' + esc(m.address) : ''}</a></div></div></div>`;
+      }).join('') + (next.length > 8 ? `<p class="note">â¦i ${next.length - 8} partits mÃ©s.</p>` : '');
+  } catch { alertMsg('Ara mateix no es pot llegir la web de la FederaciÃ³. Torna-ho a provar d\'aquÃ­ a una estona.'); }
 }
 
 function renderSel() {
-  $('#sel').innerHTML = state.teams.map((t) => `<span>${esc(t.name)}${t.category ? ` <small style="opacity:.7">· ${esc(t.category.replace(/^C\.[CT]\.\s*/, ''))}</small>` : ''}<button type="button" data-rm="${esc(t.id)}" aria-label="Treure">✕</button></span>`).join('');
+  $('#sel').innerHTML = state.teams.map((t) => `<span>${esc(t.name)}${t.category ? ` <small style="opacity:.7">Â· ${esc(t.category.replace(/^C\.[CT]\.\s*/, ''))}</small>` : ''}<button type="button" data-rm="${esc(t.id)}" aria-label="Treure">â</button></span>`).join('');
 }
 function update(refreshChips = true) {
   store.set('pc.teams', state.teams); store.set('pc.opts', state.opts);
